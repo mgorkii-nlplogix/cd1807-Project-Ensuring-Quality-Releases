@@ -17,6 +17,7 @@ resource "azurerm_linux_virtual_machine" "test" {
   resource_group_name = "${var.resource_group}"
   size                = "Standard_DS2_v2"
   admin_username      = "${var.vm_admin_username}"
+  admin_password = "${var.vm_password}"
   network_interface_ids = [azurerm_network_interface.test.id]
   admin_ssh_key {
     username   = "${var.vm_admin_username}"
