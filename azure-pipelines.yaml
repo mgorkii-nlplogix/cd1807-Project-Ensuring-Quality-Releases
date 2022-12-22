@@ -7,8 +7,8 @@ trigger:
 - main
 
 # ToDo: Replace the agent pool name, if you are using Udacity Cloud lab. 
-# Otherwise, comment out the line below. 
-# pool: myAgentPool
+# Otherwise comment out the line below. 
+pool: myAgentPool
 
 variables:
   python.version: '3.7.6'
