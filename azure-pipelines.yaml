@@ -90,7 +90,8 @@ stages:
     - task: CmdLine@2
       displayName: Install Newman Runner
       inputs:
-        script: sudo npm install -g newman # ToDo: Write your commands to install newman
+        script: |
+          sudo npm install -g newman # ToDo: Write your commands to install newman
                 mkdir -p automatedtesting/postman/logs
         workingDirectory: $(System.DefaultWorkingDirectory)
     # Postman Data Validation Test Suite    
@@ -99,11 +100,12 @@ stages:
       displayName: Run Data Validation Tests
       continueOnError: true
       inputs:
-      script:   newman run automatedtesting/postman/ValidationTest.json \
-                -e automatedtesting/postman/TestEnvironment.postman_environment.json \
-                --reporters cli,junit \
-                --reporter-junit-export automatedtesting/postman/logs/TEST-ValidationTest.xml \
-                --suppress-exit-code
+        script:   |
+                  newman run automatedtesting/postman/ValidationTest.json \
+                  -e automatedtesting/postman/TestEnvironment.postman_environment.json \
+                  --reporters cli,junit \
+                  --reporter-junit-export automatedtesting/postman/logs/TEST-ValidationTest.xml \
+                  --suppress-exit-code
         workingDirectory: $(System.DefaultWorkingDirectory)
     # Postman Regression Test Suite    
     # ToDo: Update the command and verify the working directory
@@ -259,6 +261,7 @@ stages:
             artifact: $(Pipeline.Workspace)/drop-uitests     # ToDo: Change/provide a name
             
           - task: Bash@3
+            displayName: Run Selenium tests
             inputs:
               targetType: 'inline'
               script: |           
@@ -278,28 +281,29 @@ stages:
                 pwd
                 sudo cp /var/log/selenium/selenium-test.log log/selenium/selenium-test.log
                 ls -la
-              displayName: Run Selenium tests
-            - task: PublishPipelineArtifact@1
-              displayName: Publish Selenium log file
-              inputs:
-                targetPath: '$(System.DefaultWorkingDirectory)/log/selenium'
-                artifactName: 'selenium-log'
-                publishLocation: 'pipeline'
+          - task: PublishPipelineArtifact@1
+            displayName: Publish Selenium log file
+            inputs:
+              targetPath: '$(System.DefaultWorkingDirectory)/log/selenium'
+              artifactName: 'selenium-log'
+              publishLocation: 'pipeline'
 
           #--------------------------------------------#    
           # Run JMeter test suite against the App Service
           # ToDo: Update the script below to install jmeter, unzip the jmeter test suite published zip artifact, and run the PerformanceTestSuite.  
           # ToDo: Generate the log file.           
-- job: jmeter
+  - deployment: jmeter
     pool: 
       vmImage: 'UbuntuImage'
-      displayName: Run JMeter tests
       steps:
-        - script: |
-          sudo apt-get install openjdk-11-jre-headless -y
-          wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.tgz -O jmeter.tgz
-          tar xzvf jmeter.tgz
-          mkdir -p log/jmeter
+        - task: CmdLine@2
+          displayName: Install jmeter
+          inputs:
+           script: |
+            sudo apt-get install openjdk-11-jre-headless -y
+            wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.tgz -O jmeter.tgz
+            tar xzvf jmeter.tgz
+            mkdir -p log/jmeter
         - task: CmdLine@2
           displayName: Run JMeter Stress tests
           inputs:
@@ -309,8 +313,7 @@ stages:
               -e -f -o log/jmeter/stress-test-html-report \
               -j log/jmeter/jmeter-stress-test.log
             workingDirectory: $(Pipeline.Workspace)/drop-jmeter
-
-          - task: CmdLine@2
+        - task: CmdLine@2
           displayName: Run JMeter Endurance tests
           inputs:
             script: |
@@ -319,44 +322,42 @@ stages:
               -e -f -o log/jmeter/stress-test-html-report \
               -j log/jmeter/jmeter-stress-test.log
             workingDirectory: $(Pipeline.Workspace)/drop-jmeter            # ToDo: Use the artifact name from the task above
-              - task: ArchiveFiles@2
-      displayName: Save JMeter Stress Test Report to Artifact
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report-$(Build.BuildId).zip'
-        verbose: true
-    - task: ArchiveFiles@2
-      displayName: Save JMeter Endurance Test Report to Artifact
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report-$(Build.BuildId).zip'
-        verbose: true
-    - task: PublishPipelineArtifact@1
-      displayName: Publish JMeter logs
-      inputs:
-        targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
-        artifactName: 'drop-jmeter-logs'
+        - task: ArchiveFiles@2
+          displayName: Save JMeter Stress Test Report to Artifact
+          inputs:
+            rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report'
+            includeRootFolder: false
+            archiveType: 'zip'
+            archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report-$(Build.BuildId).zip'
+            verbose: true
+        - task: ArchiveFiles@2
+          displayName: Save JMeter Endurance Test Report to Artifact
+          inputs:
+            rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report'
+            includeRootFolder: false
+            archiveType: 'zip'
+            archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report-$(Build.BuildId).zip'
+            verbose: true
+        - task: PublishPipelineArtifact@1
+          displayName: Publish JMeter logs
+          inputs:
+            targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
+            artifactName: 'drop-jmeter-logs'
 
-                
-
-
-
-    # Destroy the resources in Azure
-    # ToDo: Change the workingDirectory path, as applicable to you
+#--------------------------------------------#  
+# DEPLOYMENT STAGE
+#--------------------------------------------#    
 
 - stage: Destroy
   jobs:
-  - job: destroy
+    job: Destroy
+    displayName: Destroy
     steps:
-    - task: TerraformTaskV3@3
-      displayName: Terraform destroy
-      inputs:
-        provider: 'azurerm'
-        command: 'destroy'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-        environmentServiceNameAzureRM: '$(azureServiceConnectionId)'  
+      - task: TerraformTaskV3@3
+        displayName: Terraform destroy
+        inputs:
+          provider: 'azurerm'
+          command: 'destroy'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+          environmentServiceNameAzureRM: '$(azureServiceConnectionId)'  
 
