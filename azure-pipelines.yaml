@@ -144,7 +144,7 @@ stages:
     # Selenium Test Suite - Publish the package  
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip   # Same as the archiveFile artifact above. 
       displayName: 'Upload Package'
-      artifact: drop-uitests
+      artifact: 'drop-uitests'
 
 
 #--------------------------------------------#    
@@ -217,11 +217,12 @@ stages:
             displayName: Run JMeter Stress tests
             inputs:
               script: |
+                        pwd
+                        ls -la
                         apache-jmeter-5.4/bin/jmeter -n -t automatedtesting/jmeter/test-suite/stressTest.jmx \
                         -l log/jmeter/stress-test-result.csv \
                         -e -f -o log/jmeter/stress-test-html-report \
                         -j log/jmeter/jmeter-stress-test.log
-              workingDirectory: $(Pipeline.Workspace)/drop-jmeter
           - task: CmdLine@2
             displayName: Run JMeter Endurance tests
             inputs:
@@ -267,7 +268,7 @@ stages:
         deploy:
           steps:
           - download: current
-            artifact: $(Pipeline.Workspace)/drop-uitests     # ToDo: Change/provide a name
+            artifact: drop-uitests     # ToDo: Change/provide a name
             
           - task: Bash@3
             displayName: Run Selenium tests
@@ -290,7 +291,7 @@ stages:
                 pip3 -V
                 /usr/bin/chromium-browser --version
                 /usr/bin/chromedriver --version
-                cd $(Pipeline.Workspace)/drop-selenium
+                cd $(Pipeline.Workspace)/drop-uitests
                 find . -type f ! -name '$(Build.BuildId)-uitests.zip' -delete 
                 unzip -o selenium-$(Build.BuildId).zip
                 pwd
