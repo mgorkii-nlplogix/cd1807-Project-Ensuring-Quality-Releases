@@ -348,16 +348,16 @@ stages:
 # DEPLOYMENT STAGE
 #--------------------------------------------#    
 
-- stage: Destroy
-  jobs:
-    job: Destroy
-    displayName: Destroy
-    steps:
-      - task: TerraformTaskV3@3
-        displayName: Terraform destroy
-        inputs:
-          provider: 'azurerm'
-          command: 'destroy'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-          environmentServiceNameAzureRM: '$(azureServiceConnectionId)'  
+# - stage: Destroy
+#   jobs:
+#     job: Destroy
+#     displayName: Destroy
+#     steps:
+#       - task: TerraformTaskV3@3
+#         displayName: Terraform destroy
+#         inputs:
+#           provider: 'azurerm'
+#           command: 'destroy'
+#           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+#           environmentServiceNameAzureRM: '$(azureServiceConnectionId)'  
 
