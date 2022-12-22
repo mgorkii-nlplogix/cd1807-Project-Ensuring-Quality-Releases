@@ -172,7 +172,7 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="hostname" elementType="Argument">
             <stringProp name="Argument.name">hostname</stringProp>
-            <stringProp name="Argument.value">tqa-appservice.azurewebsites.net</stringProp>
+            <stringProp name="Argument.value">myapplication-appservice-lwa.azurewebsites.net</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
