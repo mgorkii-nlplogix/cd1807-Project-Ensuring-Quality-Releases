@@ -113,7 +113,8 @@ stages:
       displayName: Run Regression Tests
       continueOnError: true
       inputs:
-        script:  newman run automatedtesting/postman/RegressionTest.json \
+        script:  |
+                newman run automatedtesting/postman/RegressionTest.json \
                 -e automatedtesting/postman/TestEnvironment.postman_environment.json \
                 --reporters cli,junit \
                 --reporter-junit-export automatedtesting/postman/logs/TEST-RegressionTest.xml \
@@ -190,7 +191,7 @@ stages:
   # ToDo: Provide <environment name> you created in your DevOps project
   - deployment: FakeRestAPI
     pool:
-      vmImage: 'UbuntuImage'      
+      vmImage: 'ubuntu-18.04'      
     environment: 'agentVM'  # ToDo
     strategy:
       runOnce:
@@ -294,7 +295,7 @@ stages:
           # ToDo: Generate the log file.           
   # - deployment: jmeter
   #   pool: 
-  #     vmImage: 'UbuntuImage'
+  #     vmImage: 'ubuntu-18.04'
   #     steps:
   #       - task: CmdLine@2
   #         displayName: Install jmeter
