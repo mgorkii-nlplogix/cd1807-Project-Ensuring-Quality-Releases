@@ -202,7 +202,7 @@ stages:
             inputs:
               azureSubscription: '$(azureServiceConnectionId)'   
               appName:                'myApplication-lwa'
-              appType: webApp
+              appType: webAppLinux
               package: $(Pipeline.Workspace)/drop-fakerestapi/fakerestapi-$(Build.BuildId).zip      # ToDo: Use the published zip artifact. 
 
           - task: CmdLine@2
