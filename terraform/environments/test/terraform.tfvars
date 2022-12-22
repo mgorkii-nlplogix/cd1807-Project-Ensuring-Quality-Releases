@@ -8,6 +8,7 @@ tenant_id = "6f2e0c74-ee48-4819-8479-4d2961e542a5"
 location = "East US"
 resource_group_name = "Azuredevops"
 application_type = "myApplication"
+resource_group = "rg-azuredevops"
 
 # Network
 virtual_network_name = "vnet"
