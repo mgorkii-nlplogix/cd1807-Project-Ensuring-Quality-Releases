@@ -37,7 +37,7 @@ stages:
     - task: InstallSSHKey@0
       inputs:
         knownHostsEntry: 'known_hosts' # variable value
-        sshPublicKey:     $(public_key)        # variable value
+        sshPublicKey:     "$(public_key)"        # variable value
         sshKeySecureFile: 'id_rsa_udacity' # Use secure file feature in the pipeline library UI to save the "id_rsa" file, as mentioned here: https://learn.microsoft.com/en-us/azure/devops/pipelines/library/secure-files?view=azure-devops#add-a-secure-file
     
     # - task: DownloadSecureFile@1
