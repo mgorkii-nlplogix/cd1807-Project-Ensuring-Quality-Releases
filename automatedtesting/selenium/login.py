@@ -10,8 +10,9 @@ def login (user, password):
     # --uncomment when running in Azure DevOps.
     options = ChromeOptions()
     options.add_argument("--headless") 
+    options.add_argument('--headless')
+    options.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(options=options)
-    driver = webdriver.Chrome()
     print ('Browser started successfully. Navigating to the demo page to login.')
     driver.get('https://www.saucedemo.com/')
     driver.find_element(By.ID, "user-name").send_keys(user)
