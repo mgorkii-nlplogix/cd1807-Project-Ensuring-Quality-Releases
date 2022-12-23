@@ -203,7 +203,7 @@ stages:
               azureSubscription: '$(azureServiceConnectionId)'   
               appName:                'myApplication-AppService-lwa'
               appType: webApp
-              package: $(Pipeline.Workspace)/drop-fakerestapi/fakerestapi-$(Build.BuildId).zip      # ToDo: Use the published zip artifact. 
+              package: $(Pipeline.Workspace)/drop-fakerestapi/fakerestapi-$(Build.BuildId).zip      # ToDo: Use the published zip artifact
 
           - task: CmdLine@2
             displayName: Install jmeter
