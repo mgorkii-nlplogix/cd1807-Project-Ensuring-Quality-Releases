@@ -36,7 +36,6 @@ def login (user, password):
     driver.find_element(By.ID, "remove-sauce-labs-bolt-t-shirt").click()
     driver.find_element(By.ID, "remove-sauce-labs-fleece-jacket").click()
     driver.find_element(By.ID, "remove-sauce-labs-onesie").click()
-    driver.find_element(By.ID, "remove-test.allthethings()-t-shirt-(red)").click()
     print("All items removed from cart")
 
 login('standard_user', 'secret_sauce')
