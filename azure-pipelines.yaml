@@ -223,7 +223,7 @@ stages:
               script: |
                         pwd
                         ls -la
-                        apache-jmeter-5.4/bin/jmeter -n -t automatedtesting/jmeter/test-suite/stressTest.jmx \
+                        apache-jmeter-5.4/bin/jmeter -n -t jmeter/test-suite/stressTest.jmx \
                         -l log/jmeter/stress-test-result.csv \
                         -e -f -o log/jmeter/stress-test-html-report \
                         -j log/jmeter/jmeter-stress-test.log
@@ -231,7 +231,7 @@ stages:
             displayName: Run JMeter Endurance tests
             inputs:
                 script: |
-                          apache-jmeter-5.4/bin/jmeter -n -t automatedtesting/jmeter/test-suite/enduranceTest.jmx \
+                          apache-jmeter-5.4/bin/jmeter -n -t jmeter/test-suite/enduranceTest.jmx \
                           -l log/jmeter/stress-test-result.csv \
                           -e -f -o log/jmeter/stress-test-html-report \
                           -j log/jmeter/jmeter-stress-test.log
@@ -266,7 +266,6 @@ stages:
     environment:
       name: 'agentVM'         # ToDo: Change/provide a name
       resourceType: VirtualMachine
-      tags: selenium
     strategy:
       runOnce:
         deploy:
