@@ -329,7 +329,7 @@ stages:
               targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
               artifactName: 'drop-jmeter-logs'
             
-#--------------------------------------------#  
+#---------------------------------------------#  
   # Selenium | Functional UI Tests
   # ToDo: 
     - deployment: VMDeploy
