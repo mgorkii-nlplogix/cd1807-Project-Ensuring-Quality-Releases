@@ -170,17 +170,17 @@ stages:
     #--------------------------------------------#  
     # JMeter (Performance) Test Suite - Archive
     # ToDo: Complete the ArchiveFiles@2 task and publish step 
-    - task: ArchiveFiles@2
-      displayName: 'Archive PerformanceTestSuite'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/test-suite'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/jmeter-$(Build.BuildId).zip'
-    # JMeter Test Suite - Publish    
-    - publish: '$(Build.ArtifactStagingDirectory)/jmeter-$(Build.BuildId).zip'
-      displayName: Publish Jmeter
-      artifact: 'drop-jmeter'
+    # - task: ArchiveFiles@2
+    #   displayName: 'Archive PerformanceTestSuite'
+    #   inputs:
+    #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/test-suite'
+    #     includeRootFolder: false
+    #     archiveType: 'zip'
+    #     archiveFile: '$(Build.ArtifactStagingDirectory)/jmeter-$(Build.BuildId).zip'
+    # # JMeter Test Suite - Publish    
+    # - publish: '$(Build.ArtifactStagingDirectory)/jmeter-$(Build.BuildId).zip'
+    #   displayName: Publish Jmeter
+    #   artifact: 'drop-jmeter'
 
 
 
@@ -193,8 +193,8 @@ stages:
   # Deploy FakeRestAPI Web App
   # ToDo: Provide <environment name> you created in your DevOps project
   - deployment: FakeRestAPI
-    # pool:
-    #   vmImage: 'ubuntu-18'      
+    pool:
+      vmImage: 'ubuntu-18.04'      
     environment: 'agentVM'  # ToDo
     strategy:
       runOnce:
@@ -209,6 +209,72 @@ stages:
               package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'      # ToDo: Use the published zip artifact.
               deploymentMethod:       'auto'
 
+  - deployment: VMDeploy
+    displayName: VM Deploy
+    environment:
+      name: 'agentVM'         # ToDo: Change/provide a name
+      resourceType: VirtualMachine
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: drop-uitests     # ToDo: Change/provide a name           
+          - task: Bash@3
+            displayName: Run Selenium tests
+            inputs:
+              targetType: 'inline'
+              script: |           
+                #! /bin/bash
+                    
+                # sudo apt-get upgrade -y
+                # sudo apt-get install python3-pip -y
+                # sudo apt-get install unzip -y
+                # sudo apt-get install -y chromium-browser
+                # pip3 install selenium
+                
+                # download chrome driver v89
+                FILE=chromedriver_linux64.zip
+                if [ -f "$FILE" ]; then
+                  echo "$FILE exists."
+                else
+                  wget https://chromedriver.storage.googleapis.com/89.0.4389.23/chromedriver_linux64.zip
+                fi
+                # install chrome driver
+                unzip chromedriver_linux64.zip
+                sudo mv chromedriver /usr/bin/chromedriver
+                sudo chown root:root /usr/bin/chromedriver
+                sudo chmod +x /usr/bin/chromedriver
+                chromium-browser -version
+                chromedriver --version
+                # agent log analytics
+                # wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w ba2f2875-7939-40f7-8fab-9fdfe5774935 -s rb9iiVdW/SUHbVCH4V83NX16EgaXKTEtX7WfGSxykJ3iCaZ/Tm/FFqigsvOAUajQZM0L5k9vAnyM3lD4Iv61cw==
+                # sudo /opt/microsoft/omsagent/bin/service_control restart ba2f2875-7939-40f7-8fab-9fdfe5774935
+          - task: Bash@3
+            displayName: UI Tests
+            inputs:
+              targetType: 'inline'
+              script: |
+                unzip -o $(Pipeline.Workspace)drop-uitests/$(Build.BuildId)-uitests.zip -d .
+                sudo mkdir /var/logs
+                python3 login.py > ui-logs.log
+                sudo mv ui-logs.log /var/logs
+
+          # - task: PublishPipelineArtifact@1
+          #   displayName: Publish Selenium log file
+          #   inputs:
+          #     targetPath: '$(System.DefaultWorkingDirectory)/log/selenium'
+          #     artifactName: 'selenium-log'
+          #     publishLocation: 'pipeline'
+
+- stage: Tests
+  displayName: Tests
+  jobs:
+    - job: Jmeter
+      displayName: Jmeter
+      pool:
+        vmImage: 'ubuntu-18.04'
+      steps:
           - task: CmdLine@2
             displayName: Install jmeter
             inputs:
@@ -216,14 +282,15 @@ stages:
                         sudo apt-get install openjdk-11-jre-headless -y
                         wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.tgz -O jmeter.tgz
                         tar xzvf jmeter.tgz
+                        apache-jmeter-5.4/bin/jmeter --version
                         mkdir -p log/jmeter
+                        pwd
+                        ls -la
           - task: CmdLine@2
             displayName: Run JMeter Stress tests
             inputs:
               script: |
-                        pwd
-                        ls -la
-                        apache-jmeter-5.4/bin/jmeter -n -t jmeter/test-suite/stressTest.jmx \
+                        apache-jmeter-5.4/bin/jmeter -n -t jmeter/stressTest.jmx \
                         -l log/jmeter/stress-test-result.csv \
                         -e -f -o log/jmeter/stress-test-html-report \
                         -j log/jmeter/jmeter-stress-test.log
@@ -231,7 +298,7 @@ stages:
             displayName: Run JMeter Endurance tests
             inputs:
                 script: |
-                          apache-jmeter-5.4/bin/jmeter -n -t jmeter/test-suite/enduranceTest.jmx \
+                          apache-jmeter-5.4/bin/jmeter -n -t jmeter/enduranceTest.jmx \
                           -l log/jmeter/stress-test-result.csv \
                           -e -f -o log/jmeter/stress-test-html-report \
                           -j log/jmeter/jmeter-stress-test.log
