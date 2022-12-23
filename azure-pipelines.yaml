@@ -248,8 +248,9 @@ stages:
                 chromium-browser -version
                 chromedriver --version
                 # agent log analytics
-                wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w b0b4e55b-4532-4d95-9a26-e0573f6cbf0d -s cezAW7B2OIa9ZP2Jibd7m1wUYPUVIao7KpTbIY+1654MxW+bOjpX8wPkwvHMXQMww5olV+pf+O/iDleuoQIz2Q==
-                sudo /opt/microsoft/omsagent/bin/service_control restart cezAW7B2OIa9ZP2Jibd7m1wUYPUVIao7KpTbIY+1654MxW+bOjpX8wPkwvHMXQMww5olV+pf+O/iDleuoQIz2Q==
+                wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh
+                sh onboard_agent.sh -w b0b4e55b-4532-4d95-9a26-e0573f6cbf0d -s cezAW7B2OIa9ZP2Jibd7m1wUYPUVIao7KpTbIY+1654MxW+bOjpX8wPkwvHMXQMww5olV+pf+O/iDleuoQIz2Q==
+                sudo /opt/microsoft/omsagent/bin/service_control restart b0b4e55b-4532-4d95-9a26-e0573f6cbf0d
           - task: Bash@3
             displayName: UI Tests
             inputs:
