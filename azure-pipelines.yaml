@@ -170,17 +170,17 @@ stages:
     #--------------------------------------------#  
     # JMeter (Performance) Test Suite - Archive
     # ToDo: Complete the ArchiveFiles@2 task and publish step 
-    # - task: ArchiveFiles@2
-    #   displayName: 'Archive PerformanceTestSuite'
-    #   inputs:
-    #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/test-suite'
-    #     includeRootFolder: false
-    #     archiveType: 'zip'
-    #     archiveFile: '$(Build.ArtifactStagingDirectory)/jmeter-$(Build.BuildId).zip'
-    # # JMeter Test Suite - Publish    
-    # - publish: '$(Build.ArtifactStagingDirectory)/jmeter-$(Build.BuildId).zip'
-    #   displayName: Publish Jmeter
-    #   artifact: 'drop-jmeter'
+    - task: ArchiveFiles@2
+      displayName: 'Archive PerformanceTestSuite'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/test-suite'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/jmeter-$(Build.BuildId).zip'
+    # JMeter Test Suite - Publish    
+    - publish: '$(Build.ArtifactStagingDirectory)/jmeter-$(Build.BuildId).zip'
+      displayName: Publish Jmeter
+      artifact: 'drop-jmeter'
 
 
 
@@ -290,10 +290,14 @@ stages:
             displayName: Run JMeter Stress tests
             inputs:
               script: |
+                        pwd
+                        ls -a
                         apache-jmeter-5.4/bin/jmeter -n -t jmeter/stressTest.jmx \
                         -l log/jmeter/stress-test-result.csv \
                         -e -f -o log/jmeter/stress-test-html-report \
                         -j log/jmeter/jmeter-stress-test.log
+              workingDirectory: $(Pipeline.Workspace)/drop-jmeter            # ToDo: Use the artifact name from the task above
+
           - task: CmdLine@2
             displayName: Run JMeter Endurance tests
             inputs:
@@ -363,7 +367,7 @@ stages:
                     /usr/bin/chromedriver --version
                     cd $(Pipeline.Workspace)/drop-uitests
                     find . -type f ! -name '$(Build.BuildId)-uitests.zip' -delete 
-                    unzip -o selenium-$(Build.BuildId).zip
+                    unzip -o $(Build.BuildId)-uitests.zip
                     pwd
                     ls -la
                     sudo mkdir -p /var/log/selenium
