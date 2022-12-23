@@ -11,7 +11,7 @@ trigger:
 # pool: myAgentPool
 
 variables:
-  python.version: '3.7.6'
+  python.version: '3.9.7'
   # ToDo: Replace the service connection name as used in the DevOps project settings
   azureServiceConnectionId: 'myServiceConnection1'
   # Project root folder. Point to the folder containing manage.py file.
@@ -306,7 +306,6 @@ stages:
                           -l log/jmeter/stress-test-result.csv \
                           -e -f -o log/jmeter/stress-test-html-report \
                           -j log/jmeter/jmeter-stress-test.log
-                workingDirectory: $(Pipeline.Workspace)/drop-jmeter            # ToDo: Use the artifact name from the task above
           - task: ArchiveFiles@2
             displayName: Save JMeter Stress Test Report to Artifact
             inputs:
@@ -363,6 +362,7 @@ stages:
                     pip3 install selenium
                     python3 -V
                     pip3 -V
+                    pip3 freeze
                     /usr/bin/chromium-browser --version
                     /usr/bin/chromedriver --version
                     cd $(Pipeline.Workspace)/drop-uitests
