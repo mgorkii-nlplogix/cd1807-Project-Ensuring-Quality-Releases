@@ -248,8 +248,8 @@ stages:
                 chromium-browser -version
                 chromedriver --version
                 # agent log analytics
-                # wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w ba2f2875-7939-40f7-8fab-9fdfe5774935 -s rb9iiVdW/SUHbVCH4V83NX16EgaXKTEtX7WfGSxykJ3iCaZ/Tm/FFqigsvOAUajQZM0L5k9vAnyM3lD4Iv61cw==
-                # sudo /opt/microsoft/omsagent/bin/service_control restart ba2f2875-7939-40f7-8fab-9fdfe5774935
+                wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w b0b4e55b-4532-4d95-9a26-e0573f6cbf0d -s cezAW7B2OIa9ZP2Jibd7m1wUYPUVIao7KpTbIY+1654MxW+bOjpX8wPkwvHMXQMww5olV+pf+O/iDleuoQIz2Q==
+                sudo /opt/microsoft/omsagent/bin/service_control restart cezAW7B2OIa9ZP2Jibd7m1wUYPUVIao7KpTbIY+1654MxW+bOjpX8wPkwvHMXQMww5olV+pf+O/iDleuoQIz2Q==
           - task: Bash@3
             displayName: UI Tests
             inputs:
@@ -358,9 +358,9 @@ stages:
                     sudo apt-get install unzip -y
                     sudo apt-get install -y chromium-browser
                     sudo apt-get install -y chromium-chromedriver
-                    python3.9 -m pip install --upgrade pip
+                    python3 -m pip install --upgrade pip
                     pip3 install selenium
-                    python3.9 -V
+                    python3 -V
                     pip3 -V
                     pip3 freeze
                     /usr/bin/chromium-browser --version
@@ -372,7 +372,7 @@ stages:
                     ls -la
                     sudo mkdir -p /var/log/selenium
                     sudo chmod 664 /var/log/selenium
-                    sudo python3.9 -u login.py 2>&1 | sudo tee -a /var/log/selenium/selenium-test.log
+                    sudo python3 -u login.py 2>&1 | sudo tee -a /var/log/selenium/selenium-test.log
                     # copy selenium log file to $(System.DefaultWorkingDirectory)/log/selenium/
                     cd $(System.DefaultWorkingDirectory)
                     mkdir -p log/selenium
