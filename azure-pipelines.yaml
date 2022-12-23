@@ -335,51 +335,51 @@ stages:
         resourceType: VirtualMachine
       strategy:
           runOnce:
-          deploy:
-            steps:
-            - download: current
-              artifact: drop-uitests     # ToDo: Change/provide a name
-              
-            - task: Bash@3
-              displayName: Run Selenium tests
-              inputs:
-                targetType: 'inline'
-                script: |           
-                  # ToDo: Install Selenium, Chromium-browser & Chromedriver, if not already in the custom VM image. 
-                  #! /bin/bash
-                  cat /etc/*-release
-                  sudo apt-get install software-properties-common -y
-                  sudo apt-add-repository universe -y
-                  sudo apt-get update -y
-                  sudo apt-get install python3-pip -y
-                  sudo apt-get install unzip -y
-                  sudo apt-get install -y chromium-browser
-                  sudo apt-get install -y chromium-chromedriver
-                  python3 -m pip install --upgrade pip
-                  pip3 install selenium
-                  python3 -V
-                  pip3 -V
-                  /usr/bin/chromium-browser --version
-                  /usr/bin/chromedriver --version
-                  cd $(Pipeline.Workspace)/drop-uitests
-                  find . -type f ! -name '$(Build.BuildId)-uitests.zip' -delete 
-                  unzip -o selenium-$(Build.BuildId).zip
-                  pwd
-                  ls -la
-                  sudo mkdir -p /var/log/selenium
-                  sudo chmod 664 /var/log/selenium
-                  sudo python3 -u login.py 2>&1 | sudo tee -a /var/log/selenium/selenium-test.log
-                  # copy selenium log file to $(System.DefaultWorkingDirectory)/log/selenium/
-                  cd $(System.DefaultWorkingDirectory)
-                  mkdir -p log/selenium
-                  pwd
-                  sudo cp /var/log/selenium/selenium-test.log log/selenium/selenium-test.log
-                  ls -la
-            - task: PublishPipelineArtifact@1
-              displayName: Publish Selenium log file
-              inputs:
-                targetPath: '$(System.DefaultWorkingDirectory)/log/selenium'
-                artifactName: 'selenium-log'
-                publishLocation: 'pipeline'
+            deploy:
+              steps:
+              - download: current
+                artifact: drop-uitests     # ToDo: Change/provide a name
+                
+              - task: Bash@3
+                displayName: Run Selenium tests
+                inputs:
+                  targetType: 'inline'
+                  script: |           
+                    # ToDo: Install Selenium, Chromium-browser & Chromedriver, if not already in the custom VM image. 
+                    #! /bin/bash
+                    cat /etc/*-release
+                    sudo apt-get install software-properties-common -y
+                    sudo apt-add-repository universe -y
+                    sudo apt-get update -y
+                    sudo apt-get install python3-pip -y
+                    sudo apt-get install unzip -y
+                    sudo apt-get install -y chromium-browser
+                    sudo apt-get install -y chromium-chromedriver
+                    python3 -m pip install --upgrade pip
+                    pip3 install selenium
+                    python3 -V
+                    pip3 -V
+                    /usr/bin/chromium-browser --version
+                    /usr/bin/chromedriver --version
+                    cd $(Pipeline.Workspace)/drop-uitests
+                    find . -type f ! -name '$(Build.BuildId)-uitests.zip' -delete 
+                    unzip -o selenium-$(Build.BuildId).zip
+                    pwd
+                    ls -la
+                    sudo mkdir -p /var/log/selenium
+                    sudo chmod 664 /var/log/selenium
+                    sudo python3 -u login.py 2>&1 | sudo tee -a /var/log/selenium/selenium-test.log
+                    # copy selenium log file to $(System.DefaultWorkingDirectory)/log/selenium/
+                    cd $(System.DefaultWorkingDirectory)
+                    mkdir -p log/selenium
+                    pwd
+                    sudo cp /var/log/selenium/selenium-test.log log/selenium/selenium-test.log
+                    ls -la
+              - task: PublishPipelineArtifact@1
+                displayName: Publish Selenium log file
+                inputs:
+                  targetPath: '$(System.DefaultWorkingDirectory)/log/selenium'
+                  artifactName: 'selenium-log'
+                  publishLocation: 'pipeline'
 
           
