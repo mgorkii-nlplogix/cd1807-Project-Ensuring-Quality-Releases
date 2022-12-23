@@ -291,12 +291,12 @@ stages:
             inputs:
               script: |
                         pwd
-                        ls -a
-                        apache-jmeter-5.4/bin/jmeter -n -t jmeter/stressTest.jmx \
+                        ls -d */
+                        ls automatedtesting
+                        apache-jmeter-5.4/bin/jmeter -n -t automatedtesting/jmeter/test-suite/stressTest.jmx \
                         -l log/jmeter/stress-test-result.csv \
                         -e -f -o log/jmeter/stress-test-html-report \
                         -j log/jmeter/jmeter-stress-test.log
-              workingDirectory: $(Pipeline.Workspace)/drop-jmeter            # ToDo: Use the artifact name from the task above
 
           - task: CmdLine@2
             displayName: Run JMeter Endurance tests
