@@ -16,7 +16,7 @@ def login (user, password):
     # options.add_argument('--no-sandbox')
     # options.add_argument('--remote-debugging-port=9222')
     # driver = webdriver.Chrome(options=options)
-    print ('Browser started successfully. Navigating to the demo page to login.')
+    print ('Browser started successfully. Navigating to the demo page to login')
     # driver.get('https://www.saucedemo.com/')
     # driver.find_element(By.ID, "user-name").send_keys(user)
     # driver.find_element(By.ID, "password").send_keys(password)
