@@ -354,13 +354,13 @@ stages:
                     sudo apt-get install software-properties-common -y
                     sudo apt-add-repository universe -y
                     sudo apt-get update -y
-                    sudo apt-get install python3-pip -y
+                    sudo apt-get install python3.9-pip -y
                     sudo apt-get install unzip -y
                     sudo apt-get install -y chromium-browser
                     sudo apt-get install -y chromium-chromedriver
-                    python3 -m pip install --upgrade pip
+                    python3.9 -m pip install --upgrade pip
                     pip3 install selenium
-                    python3 -V
+                    python3.9 -V
                     pip3 -V
                     pip3 freeze
                     /usr/bin/chromium-browser --version
@@ -372,7 +372,7 @@ stages:
                     ls -la
                     sudo mkdir -p /var/log/selenium
                     sudo chmod 664 /var/log/selenium
-                    sudo python3 -u login.py 2>&1 | sudo tee -a /var/log/selenium/selenium-test.log
+                    sudo python3.9 -u login.py 2>&1 | sudo tee -a /var/log/selenium/selenium-test.log
                     # copy selenium log file to $(System.DefaultWorkingDirectory)/log/selenium/
                     cd $(System.DefaultWorkingDirectory)
                     mkdir -p log/selenium
