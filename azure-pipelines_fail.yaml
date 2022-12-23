@@ -280,20 +280,40 @@ stages:
               script: |           
                 # ToDo: Install Selenium, Chromium-browser & Chromedriver, if not already in the custom VM image. 
                 #! /bin/bash
-                cat /etc/*-release
-                sudo apt-get install software-properties-common -y
-                sudo apt-add-repository universe -y
-                sudo apt-get update -y
+                # cat /etc/*-release
+                # sudo apt-get install software-properties-common -y
+                # sudo apt-add-repository universe -y
+                # sudo apt-get update -y
+                # sudo apt-get install python3-pip -y
+                # sudo apt-get install unzip -y
+                # sudo apt-get install -y chromium-browser
+                # sudo apt-get install -y chromium-chromedriver
+                # python3.9 -m pip install --upgrade pip
+                # pip3.9 install selenium
+                # python3 -V
+                # pip3 -V
+                # /usr/bin/chromium-browser --version
+                # /usr/bin/chromedriver --version
+                sudo apt-get upgrade -y
                 sudo apt-get install python3-pip -y
                 sudo apt-get install unzip -y
                 sudo apt-get install -y chromium-browser
-                sudo apt-get install -y chromium-chromedriver
-                python3.9 -m pip install --upgrade pip
-                pip3.9 install selenium
-                python3 -V
-                pip3 -V
-                /usr/bin/chromium-browser --version
-                /usr/bin/chromedriver --version
+                pip3 install selenium
+                # download chrome driver v89
+                FILE=chromedriver_linux64.zip
+                if [ -f "$FILE" ]; then
+                  echo "$FILE exists."
+                else
+                  wget https://chromedriver.storage.googleapis.com/89.0.4389.23/chromedriver_linux64.zip
+                fi
+                # install chrome driver
+                unzip chromedriver_linux64.zip
+                sudo mv chromedriver /usr/bin/chromedriver
+                sudo chown root:root /usr/bin/chromedriver
+                sudo chmod +x /usr/bin/chromedriver
+                chromium-browser -version
+                chromedriver --version
+
                 cd $(Pipeline.Workspace)/drop-uitests
                 find . -type f ! -name '$(Build.BuildId)-uitests.zip' -delete 
                 unzip -o selenium-$(Build.BuildId).zip
