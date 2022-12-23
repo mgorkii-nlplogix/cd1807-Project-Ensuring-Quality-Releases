@@ -206,7 +206,7 @@ stages:
               azureSubscription: '$(azureServiceConnectionId)'   
               appName:                'myApplication-AppService-lwa'
               appType: webApp
-              package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'      # ToDo: Use the published zip artifact
+              package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'      # ToDo: Use the published zip artifact.
               deploymentMethod:       'auto'
 
           - task: CmdLine@2
